@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reproducción de Crujidos</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        h1 { text-align: center; }
+        .audio-container { margin: 10px 0; padding: 10px; background: #fff; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.2); }
+        audio { width: 100%; outline: none; }
+    </style>
+</head>
+<body>
+    <h1>Crujidos para prueba</h1>
+    <div id="audios"></div>
+
+    <script>
+        // Función para listar archivos de audio automáticamente
+        fetch(".")
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const links = Array.from(doc.querySelectorAll("a"));
+            const audioFiles = links
+                .map(a => a.getAttribute("href"))
+                .filter(f => f.endsWith(".wav"));
+
+            const container = document.getElementById("audios");
+
+            audioFiles.forEach(file => {
+                const div = document.createElement("div");
+                div.className = "audio-container";
+                
+                const label = document.createElement("p");
+                label.textContent = file;
+                
+                const audio = document.createElement("audio");
+                audio.controls = true;
+                audio.src = file;
+
+                div.appendChild(label);
+                div.appendChild(audio);
+                container.appendChild(div);
+            });
+        })
+        .catch(err => console.log("No se pudieron listar los archivos automáticamente.", err));
+    </script>
+</body>
+</html>
